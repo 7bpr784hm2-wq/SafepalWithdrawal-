@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Safepal</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    color:white;
+    overflow:hidden;
+}
+
+/* BACKGROUND */
+#particles-js{
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:-2;
+    background:linear-gradient(135deg,#061a3a,#0b3d91);
+}
+
+/* GLASS CARD */
+.card{
+    width:90%;
+    max-width:420px;
+    margin:100px auto;
+    padding:25px;
+    background:rgba(255,255,255,0.08);
+    border-radius:20px;
+    backdrop-filter:blur(15px);
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,0.4);
+}
+
+/* INPUT */
+.input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+    outline:none;
+}
+
+/* BUTTON */
+.btn{
+    display:inline-block;
+    padding:12px;
+    margin-top:15px;
+    background:#1e90ff;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    width:100%;
+}
+
+/* LOADER */
+.loader{
+    width:100%;
+    height:10px;
+    background:rgba(255,255,255,0.2);
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:15px;
+}
+
+#bar{
+    width:0%;
+    height:100%;
+    background:#1e90ff;
+}
+
+/* SCREEN SYSTEM */
+.screen{display:none;}
+.active{display:block;}
+
+.error{color:#ff4d4d;}
+.tag{font-size:12px;background:#1e90ff;padding:5px;border-radius:10px;}
+</style>
+</head>
+
+<body>
+
+<div id="particles-js"></div>
+
+<!-- 🔐 LOGIN -->
+<div id="login" class="card screen active">
+    <h1>Safepal</h1>
+    <p>Enter PIN to continue</p>
+
+    <input id="pin" class="input" type="password" maxlength="4" placeholder="PIN">
+
+    <button class="btn" onclick="login()">Unlock</button>
+    <p id="msg" class="error"></p>
+</div>
+
+<!-- 📊 DASHBOARD -->
+<div id="dash" class="card screen">
+    <h1>Safepal</h1>
+    <p>Welcome Twania Glidewell</p>
+
+    <p>Portfolio Balance</p>
+    <h2>$2,500,000.00</h2>
+    <span class="tag">ACCOUNT</span>
+
+    <button class="btn" onclick="goWithdraw()">Withdraw</button>
+</div>
+
+<!-- 💸 WITHDRAW -->
+<div id="withdraw" class="card screen">
+    <h1>Withdraw</h1>
+
+    <p>Bitcoin (BTC)</p>
+
+    <input class="input" value="0Xabc1267e58986xyxdt">
+
+    <button class="btn" onclick="goProcess()">Confirm Withdrawal</button>
+</div>
+
+<!-- ⚙️ PROCESSING -->
+<div id="process" class="card screen">
+    <h1>Processing</h1>
+
+    <div class="loader">
+        <div id="bar"></div>
+    </div>
+
+    <p id="percent">0%</p>
+</div>
+
+<!-- ❌ RESULT -->
+<div id="result" class="card screen">
+    <h1>Transaction Failed</h1>
+    <p class="error">Withdrawal cannot be completed at this time.</p>
+
+    <button class="btn" onclick="restart()">Back to Dashboard</button>
+</div>
+
+<!-- PARTICLES -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<script>
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 60 },
+    color: { value: "#1e90ff" },
+    size: { value: 2 },
+    move: { speed: 1 }
+  }
+});
+
+/* SCREEN SWITCH */
+function show(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+/* 🔐 LOGIN (PIN ONLY = 3344) */
+function login(){
+    let pin = document.getElementById("pin").value;
+
+    if(pin === "3344"){
+        show("dash");
+    } else {
+        document.getElementById("msg").innerText = "Wrong PIN";
+    }
+}
+
+/* NAVIGATION */
+function goWithdraw(){
+    show("withdraw");
+}
+
+function goProcess(){
+    show("process");
+
+    let bar = document.getElementById("bar");
+    let percent = document.getElementById("percent");
+
+    let i = 0;
+
+    let x = setInterval(()=>{
+        i += 2;
+        bar.style.width = i + "%";
+        percent.innerText = i + "%";
+
+        if(i >= 90){
+            clearInterval(x);
+            setTimeout(()=>show("result"), 800);
+        }
+    }, 80);
+}
+
+/* RESET */
+function restart(){
+    show("dash");
+}
+</script>
+
+</body>
+</html>
